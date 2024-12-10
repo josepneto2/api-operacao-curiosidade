@@ -1,9 +1,10 @@
-﻿namespace APIOperacaoCuriosidade.Repositories; 
+﻿using System.Linq.Expressions;
+
+namespace APIOperacaoCuriosidade.Repositories; 
 public interface IRepository<T> {
     IEnumerable<T> BuscarTodos();
-    T BuscarPorId(int id);
+    T? BuscarPorId(Expression<Func<T, bool>> predicate);
     T Criar(T entidade);
     T Atualizar(T entidade);
-    T Deletar(int id);
-
+    T Deletar(T entidade);
 }
