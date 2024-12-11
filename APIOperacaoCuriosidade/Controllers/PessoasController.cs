@@ -6,9 +6,9 @@ namespace APIOperacaoCuriosidade.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class PessoasController : ControllerBase {
-        private readonly IRepository<Pessoa> _repository;
+        private readonly IPessoaRepository _repository;
 
-        public PessoasController(IRepository<Pessoa> repository) {
+        public PessoasController(IPessoaRepository repository) {
             _repository = repository;
         }
 
@@ -46,8 +46,8 @@ namespace APIOperacaoCuriosidade.Controllers {
                 return BadRequest("Dados inválidos");
             }
 
-            _repository.Atualizar(pessoa);
-            return Ok(pessoa);
+            var pessoaAtualizada = _repository.Atualizar(pessoa);
+            return Ok(pessoaAtualizada);
         }
 
         [HttpDelete("{id:int}")]

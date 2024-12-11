@@ -6,9 +6,9 @@ namespace APIOperacaoCuriosidade.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class UsuariosController : ControllerBase {
-        private readonly IRepository<Usuario> _repository;
+        private readonly IUsuarioRepository _repository;
 
-        public UsuariosController(IRepository<Usuario> repository) {
+        public UsuariosController(IUsuarioRepository repository) {
             _repository = repository;
         }
 
@@ -46,7 +46,7 @@ namespace APIOperacaoCuriosidade.Controllers {
                 return BadRequest("Dados inválidos");
             }
 
-            _repository.Atualizar(usuario);
+            var usuarioAtualizado = _repository.Atualizar(usuario);
             return Ok(usuario);
         }
 

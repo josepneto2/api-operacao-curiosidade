@@ -10,6 +10,6 @@ public class Pessoa {
     public string? Sentimentos { get; set; }
     public string? Valores { get; set; }
     public DateTime DataCadastro { get; set; }
-    public bool Status { get; set; }
+    public bool Ativo { get; set; }
     public bool Deletado { get; set; }
 }
