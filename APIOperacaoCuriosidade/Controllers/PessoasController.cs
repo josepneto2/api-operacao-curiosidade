@@ -35,6 +35,12 @@ namespace APIOperacaoCuriosidade.Controllers {
             if (pessoa == null) {
                 return BadRequest("Dados inválidos");
             }
+
+            bool existe = _repository.Existe(p => p.Nome == pessoa.Nome || p.Email == pessoa.Email);
+            if (existe) {
+                return BadRequest("Pessoa já cadastrada");
+            }
+
             var pessoaCriada = _repository.Criar(pessoa);
 
             return CreatedAtAction("BuscarPorId", new { id = pessoaCriada.Id }, pessoaCriada);
@@ -79,34 +85,15 @@ namespace APIOperacaoCuriosidade.Controllers {
             return Ok(pessoa);
         }
 
-        [HttpGet("dashbordInfos")]
+        [HttpGet("dashboardInfos")]
         public ActionResult<DashboardInfos> QuantidadeCadastros() {
-            DashboardInfos dashboardInfos = new DashboardInfos();
             var cadastros = _repository.BuscarTodos();
             int totalCadastros = cadastros.Count();
             int quantidadeCadastrosUltimoMes = DashboardUtils.QuantidadeCadastrosUltimoMes(cadastros);
+            int quantidadeCadastrosPendentes = DashboardUtils.QuantidadeCadastrosPendentes(cadastros);
 
-            dashboardInfos.TotalCadastros = totalCadastros;
-            dashboardInfos.CadastrosUltimoMes = quantidadeCadastrosUltimoMes;
-            return Ok(DashboardInfos);
-        }
-        
-        [HttpGet("quantidadeCadastrosPendentes")]
-        public ActionResult QuantidadeCadastrosPendentes() {
-            int cadastrosPendentes = 0;
-            var cadastros = _repository.BuscarTodos();
-
-            foreach (var cadastro in cadastros) {
-                var propriedades = cadastro.GetType().GetProperties();
-                foreach (var propriedade in propriedades) {
-                    var valor = propriedade.GetValue(cadastro);
-                    if (valor == "") {
-                        cadastrosPendentes++;
-                        break;
-                    }
-                }
-            }
-            return Ok(cadastrosPendentes);
+            DashboardInfos dashboardInfos = new DashboardInfos(totalCadastros, quantidadeCadastrosUltimoMes, quantidadeCadastrosPendentes);
+            return Ok(dashboardInfos);
         }
     }
 }

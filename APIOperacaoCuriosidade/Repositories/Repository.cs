@@ -39,5 +39,9 @@ namespace APIOperacaoCuriosidade.Repositories {
             return _context.Set<T>().FirstOrDefault(predicate);
 
         }
+
+        public bool Existe(Expression<Func<T, bool>> predicate) {
+            return _context.Set<T>().Any(predicate);
+        }
     }
 }
