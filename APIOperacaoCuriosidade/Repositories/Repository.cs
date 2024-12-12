@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using APIOperacaoCuriosidade.Context;
+using APIOperacaoCuriosidade.Models;
 
 namespace APIOperacaoCuriosidade.Repositories {
     public class Repository<T> : IRepository<T> where T : class {
@@ -32,6 +33,11 @@ namespace APIOperacaoCuriosidade.Repositories {
             _context.Set<T>().Remove(entidade);
             _context.SaveChanges();
             return entidade;
+        }
+
+        public T? BuscarPorNomeEmail(Expression<Func<T, bool>> predicate) {
+            return _context.Set<T>().FirstOrDefault(predicate);
+
         }
     }
 }

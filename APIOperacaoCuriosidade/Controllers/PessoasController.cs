@@ -54,11 +54,29 @@ namespace APIOperacaoCuriosidade.Controllers {
         public ActionResult DeletePessoa(int id) {
             var pessoa = _repository.BuscarPorId(p => p.Id == id);
             if (pessoa == null) {
-                return NotFound("Usuario não encontrado");
+                return NotFound("Pessoa não encontrada");
             }
 
             var pessoaDeletada = _repository.Deletar(pessoa);
             return Ok(pessoaDeletada); ;
+        }
+
+        [HttpGet("{busca}")]
+        public ActionResult<Pessoa> BuscarPorNomeEmail(string busca) {
+            if (string.IsNullOrEmpty(busca)) {
+                return BadRequest("A busca não pode ser vazia");
+            }
+
+            var pessoa = _repository.BuscarPorNomeEmail(p => 
+                p.Nome.ToLower().Contains(busca.ToLower()) ||
+                p.Email.ToLower().Contains(busca.ToLower())
+            );
+
+            if (pessoa == null) {
+                return NotFound("Pessoa não encontrada");
+            }
+
+            return Ok(pessoa);
         }
     }
 }

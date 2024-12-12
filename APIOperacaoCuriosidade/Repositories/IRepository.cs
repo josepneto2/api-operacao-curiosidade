@@ -7,4 +7,5 @@ public interface IRepository<T> {
     T Criar(T entidade);
     T Atualizar(T entidade);
     T Deletar(T entidade);
+    public T? BuscarPorNomeEmail(Expression<Func<T, bool>> predicate);
 }
