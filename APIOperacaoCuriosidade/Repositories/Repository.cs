@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using APIOperacaoCuriosidade.Context;
-using APIOperacaoCuriosidade.Models;
 
 namespace APIOperacaoCuriosidade.Repositories {
     public class Repository<T> : IRepository<T> where T : class {
@@ -18,26 +17,29 @@ namespace APIOperacaoCuriosidade.Repositories {
             return _context.Set<T>().FirstOrDefault(predicate);
         }
 
-        public T Criar(T entidade) {
+        public T? Criar(T entidade) {
             _context.Set<T>().Add(entidade);
             _context.SaveChanges();
             return entidade;
         }
 
-        public T Atualizar(T entidade) {
+        public T? Atualizar(T entidade) {
             _context.Set<T>().Update(entidade);
             _context.SaveChanges();
             return entidade;
         }
-        public T Deletar(T entidade) {
+        public T? Deletar(T entidade) {
             _context.Set<T>().Remove(entidade);
             _context.SaveChanges();
             return entidade;
         }
 
+        public IEnumerable<T> FiltrarPorNomeEmail(Expression<Func<T, bool>> predicate) {
+            return _context.Set<T>().Where(predicate).ToList();
+        }
+
         public T? BuscarPorNomeEmail(Expression<Func<T, bool>> predicate) {
             return _context.Set<T>().FirstOrDefault(predicate);
-
         }
 
         public bool Existe(Expression<Func<T, bool>> predicate) {

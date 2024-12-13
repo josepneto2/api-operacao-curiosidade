@@ -16,6 +16,11 @@ namespace APIOperacaoCuriosidade.Controllers {
         [HttpGet]
         public ActionResult<IEnumerable<Pessoa>> BuscarTodos() {
             var pessoas = _repository.BuscarTodos();
+
+            if (pessoas == null) {
+                return NotFound("Não encontrado");
+            }
+
             return Ok(pessoas);
         }
 
@@ -67,13 +72,31 @@ namespace APIOperacaoCuriosidade.Controllers {
             return Ok(pessoaDeletada); ;
         }
 
+        [HttpGet("filtrar/{busca}")]
+        public ActionResult<IEnumerable<Pessoa>> FiltrarPorNomeEmail(string busca) {
+            if (string.IsNullOrEmpty(busca)) {
+                return BadRequest("A busca não pode ser vazia");
+            }
+
+            var pessoas = _repository.FiltrarPorNomeEmail(p =>
+                p.Nome.ToLower().Contains(busca.ToLower()) ||
+                p.Email.ToLower().Contains(busca.ToLower())
+            );
+
+            if (pessoas == null) {
+                return NotFound("Pessoa não encontrada");
+            }
+
+            return Ok(pessoas);
+        }
+
         [HttpGet("{busca}")]
         public ActionResult<Pessoa> BuscarPorNomeEmail(string busca) {
             if (string.IsNullOrEmpty(busca)) {
                 return BadRequest("A busca não pode ser vazia");
             }
 
-            var pessoa = _repository.BuscarPorNomeEmail(p => 
+            var pessoa = _repository.BuscarPorNomeEmail(p =>
                 p.Nome.ToLower().Contains(busca.ToLower()) ||
                 p.Email.ToLower().Contains(busca.ToLower())
             );

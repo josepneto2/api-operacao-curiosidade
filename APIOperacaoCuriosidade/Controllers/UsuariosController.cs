@@ -35,6 +35,11 @@ namespace APIOperacaoCuriosidade.Controllers {
                 return BadRequest("Dados inválidos");
             }
 
+            bool existe = _repository.Existe(p => p.Nome == usuario.Nome || p.Email == usuario.Email);
+            if (existe) {
+                return BadRequest("Usuário já cadastrado");
+            }
+
             var usuarioCriado = _repository.Criar(usuario);
 
             return CreatedAtAction("BuscarPorId", new { id = usuarioCriado.Id }, usuarioCriado);
@@ -59,6 +64,42 @@ namespace APIOperacaoCuriosidade.Controllers {
 
             var usuarioDeletado = _repository.Deletar(usuario);
             return Ok(usuarioDeletado);
+        }
+
+        [HttpGet("filtrar/{busca}")]
+        public ActionResult<IEnumerable<Usuario>> FiltrarPorNomeEmail(string busca) {
+            if (string.IsNullOrEmpty(busca)) {
+                return BadRequest("A busca não pode ser vazia");
+            }
+
+            var usuarios = _repository.FiltrarPorNomeEmail(p =>
+                p.Nome.ToLower().Contains(busca.ToLower()) ||
+                p.Email.ToLower().Contains(busca.ToLower())
+            );
+
+            if (usuarios == null) {
+                return NotFound("Pessoa não encontrada");
+            }
+
+            return Ok(usuarios);
+        }
+
+        [HttpGet("{busca}")]
+        public ActionResult<Usuario> BuscarPorNomeEmail(string busca) {
+            if (string.IsNullOrEmpty(busca)) {
+                return BadRequest("A busca não pode ser vazia");
+            }
+
+            var usuario = _repository.BuscarPorNomeEmail(p =>
+                p.Nome.ToLower().Contains(busca.ToLower()) ||
+                p.Email.ToLower().Contains(busca.ToLower())
+            );
+
+            if (usuario == null) {
+                return NotFound("Pessoa não encontrada");
+            }
+
+            return Ok(usuario);
         }
     }
 }
